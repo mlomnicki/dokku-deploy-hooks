@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
+
+APP="$1"
+HOOKS_PATH="deploy/pre-deploy"
+
+if [[ -f "$DOKKU_ROOT/$APP/DEPLOY_HOOKS" ]]; then
+
+  echo "-----> Running pre-deploy hooks"
+  . $(dirname "$0")/functions
+  execute_hooks $HOOKS_PATH
+
+fi

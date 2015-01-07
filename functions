@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
+
+APP="$1"
+IMAGE="dokku/$APP"
+DOCKER_ARGS=$(: | pluginhook docker-args $APP)
+
+function run_docker() {
+  docker run -i $DOCKER_ARGS $IMAGE /exec "$1"
+}
+
+function execute_hooks() {
+  local hooks_path="$1"
+
+  set +e; run_docker "test -f $hooks_path"; found=$?; set -e;
+  if [[ $found -eq 0 ]]; then
+    echo "       $hooks_path file found. Running it ..."
+    run_docker "$hooks_path"
+  else
+    echo "       $hooks_path not found or executable bit not set. Skipping ..."
+  fi
+}

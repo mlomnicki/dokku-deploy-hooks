@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
+
+if [[ $1 == deploy-hooks:* ]]; then
+  if [[ -z $2 ]]; then
+    echo "You must specify an app name"
+    exit 1
+  else
+    APP="$2"
+    if [[ -d "$DOKKU_ROOT/$APP" ]]; then
+        APP_EXISTS=true
+    else
+        APP_EXISTS=false
+    fi
+  fi
+fi
+
+case "$1" in
+  deploy-hooks:on)
+    if $APP_EXISTS; then
+      touch "$DOKKU_ROOT/$APP/DEPLOY_HOOKS"
+      echo "-----> Deploy hooks activated"
+    fi
+    ;;
+
+  deploy-hooks:off)
+    if $APP_EXISTS; then
+      rm -f "$DOKKU_ROOT/$APP/DEPLOY_HOOKS"
+      echo "-----> Deploy hooks deactivated"
+    fi
+    ;;
+
+  help)
+    cat && cat<<EOF
+    deploy-hooks:on <app>                           Activate deploy hooks
+    deploy-hooks:off <app>                          Deactivate deploy hooks
+EOF
+    ;;
+
+  *)
+    exit $DOKKU_NOT_IMPLEMENTED_EXIT
+    ;;
+
+esac
