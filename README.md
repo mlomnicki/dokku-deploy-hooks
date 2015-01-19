@@ -12,7 +12,6 @@ Installation
 
     cd /var/lib/dokku/plugins
     git clone https://github.com/mlomnicki dokku-deploy-hooks deploy-hooks
-    dokku plugins-install
 
 Usage
 =====
@@ -32,10 +31,6 @@ Just remember to set the correct shebang line (like #!/bin/bash if you want to e
 Next make it executable
 
     chmod +x deploy/pre-deploy
-
-Finally, enable hooks in dokku
-
-    dokku deploy-hooks:on YOUR-APP
 
 From now on your script will be executed every time you deploy the app.
 
