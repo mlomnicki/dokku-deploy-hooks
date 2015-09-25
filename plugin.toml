@@ -1,0 +1,4 @@
+[plugin]
+description = "support for pre- and post-deploy hooks"
+version = "0.2.0"
+[plugin.config]
