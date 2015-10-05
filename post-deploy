@@ -3,7 +3,7 @@
 set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
 
 APP="$1"
-HOOKS_PATH="deploy/post-deploy"
+HOOKS_PATH="${DOKKU_DEPLOY_HOOKS_PREFIX}/deploy/post-deploy"
 
 echo "-----> Running post-deploy hooks"
 . $(dirname "$0")/functions
