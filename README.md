@@ -42,8 +42,6 @@ From now on your script will be executed every time you deploy the app.
     -----> Running pre-deploy hooks
     -----> deploy/pre-deploy found. Running it ...
 
-In case the scripts are not located in `/deploy` directory, `DOKKU_DEPLOY_HOOKS_PREFIX` env variable can be set. For example, with `DOKKU_DEPLOY_HOOKS_PREFIX` set to `/app`, scripts `/app/deploy/pre-deploy` and `/app/deploy/post-deploy` will be attempted.
-
 MIT License
 ===========
 
