@@ -3,15 +3,13 @@
 set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
 
 APP="$1"
-IMAGE="dokku/$APP"
 
 function execute_hooks() {
   local hooks_path="$1"
 
   echo $hooks_path
 
-  id=$(docker run -d $IMAGE test -f $hooks_path)
-  if [ $(docker wait $id) -ne 0 ]; then
+  if ! dokku run $APP test -f $hooks_path; then
     echo "       $hooks_path not found or executable bit not set. Skipping ..."
     exit 0
   fi

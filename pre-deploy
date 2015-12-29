@@ -4,8 +4,7 @@ set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
 
 APP="$1"
 
-DOKKU_DEPLOY_HOOKS_PREFIX=$(dokku config:get $APP DOKKU_DEPLOY_HOOKS_PREFIX || true)
-HOOKS_PATH="${DOKKU_DEPLOY_HOOKS_PREFIX}/deploy/pre-deploy"
+HOOKS_PATH="deploy/pre-deploy"
 
 echo "-----> Running pre-deploy hooks"
 . $(dirname "$0")/functions
