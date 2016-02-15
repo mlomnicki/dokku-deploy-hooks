@@ -11,7 +11,7 @@ Installation
 ============
 
     cd /var/lib/dokku/plugins
-    git clone https://github.com/mlomnicki dokku-deploy-hooks deploy-hooks
+    git clone https://github.com/mlomnicki/dokku-deploy-hooks deploy-hooks
 
 Usage
 =====
