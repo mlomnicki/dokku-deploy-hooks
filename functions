@@ -2,17 +2,37 @@
 
 set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
 
+source "$PLUGIN_ENABLED_PATH/common/functions"
+
 APP="$1"
+IMAGE=$(get_app_image_name $APP)
+
+# Almost the same as dokku run, except it uses $APP:latest image
+function run() {
+  if [[ -z "$DOKKU_RM_CONTAINER" ]]; then
+    DOKKU_APP_RM_CONTAINER=$(dokku config:get $APP DOKKU_RM_CONTAINER || true)
+    DOKKU_GLOBAL_RM_CONTAINER=$(dokku config:get --global DOKKU_RM_CONTAINER || true)
+    DOKKU_RM_CONTAINER=${DOKKU_APP_RM_CONTAINER:="$DOKKU_GLOBAL_RM_CONTAINER"}
+  fi
+
+  DOCKER_ARGS=$(: | plugn trigger docker-args-run $APP $IMAGE_TAG)
+  [[ "$DOKKU_TRACE" ]] && DOCKER_ARGS+=" -e TRACE=true "
+  [[ "$DOKKU_RM_CONTAINER" ]] && DOKKU_RUN_OPTS="--rm"
+  has_tty && DOKKU_RUN_OPTS+=" -i -t"
+  is_image_herokuish_based "$IMAGE" && EXEC_CMD="/exec"
+
+  docker run $DOKKU_GLOBAL_RUN_ARGS $DOKKU_RUN_OPTS $DOCKER_ARGS $IMAGE $EXEC_CMD "$@"
+}
 
 function execute_hooks() {
   local hooks_path="$1"
 
   echo $hooks_path
 
-  if ! dokku run $APP test -f $hooks_path; then
+  if ! run test -f $hooks_path; then
     echo "       $hooks_path not found or executable bit not set. Skipping ..."
     exit 0
   fi
   echo "       $hooks_path file found. Running it ..."
-  dokku run $APP $hooks_path
+  run $hooks_path
 }
