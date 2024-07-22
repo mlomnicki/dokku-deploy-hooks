@@ -31,8 +31,21 @@ function execute_hooks() {
 
   if ! run test -f $hooks_path; then
     echo "       $hooks_path not found or executable bit not set. Skipping ..."
-    exit 0
+    return
   fi
   echo "       $hooks_path file found. Running it ..."
   run $hooks_path
+}
+
+function execute_host_hooks() {
+  local hooks_path="$1"
+
+  echo $hooks_path
+
+  if ! test -x $hooks_path; then
+    echo "       $hooks_path not found or executable bit not set. Skipping ..."
+    return
+  fi
+  echo "       $hooks_path file found. Running it ..."
+  . $hooks_path
 }
